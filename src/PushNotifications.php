@@ -82,17 +82,32 @@ class PushNotifications {
         ]
       );
     } catch (\GuzzleHttp\Exception\BadResponseException $e) {
-      $response = $e->GetResponse();
-      $parsedResponse = json_decode($response->GetBody());
-      $badJSON = $parsedResponse === null;
-      if (
-        $badJSON ||
-        !property_exists($parsedResponse, 'error') ||
-        !property_exists($parsedResponse, 'description')
+      $response = $e->getResponse();
+      $statusCode = $response->getStatusCode();
+      $bodyContent = $response->getBody()->getContents();
+      $parsedResponse = json_decode($bodyContent);
+
+      $errorMessage = "Request failed with status $statusCode";
+      $truncatedBody = mb_substr($bodyContent, 0, 1000, 'UTF-8');
+
+      if (json_last_error() !== JSON_ERROR_NONE) {
+          $errorMessage .= ". Invalid JSON response";
+          if (!empty($truncatedBody)) {
+              $errorMessage .= " - Body: " . $truncatedBody;
+          }
+      } else if (
+          !property_exists($parsedResponse, 'error') ||
+          !property_exists($parsedResponse, 'description')
       ) {
-        throw new \Exception("An unexpected server error has occurred");
+          $errorMessage .= ". Unexpected response format";
+          if (!empty($truncatedBody)) {
+              $errorMessage .= " - Body: " . $truncatedBody;
+          }
+      } else {
+          $errorMessage = "{$parsedResponse->error}: {$parsedResponse->description}";
       }
-      throw new \Exception("{$parsedResponse->error}: {$parsedResponse->description}");
+
+      throw new \Exception($errorMessage);
     }
 
     $parsedResponse = json_decode($response->GetBody());

@@ -380,7 +380,7 @@ final class InterestsTest extends TestCase {
 
   public function testPublishToInterestsShouldErrorIfBadErrorJson(): void {
     $this->expectException(Exception::class);
-    $this->expectExceptionMessage("unexpected server error");
+    $this->expectExceptionMessage("Request failed with status 400. Invalid JSON response - Body: <notjson></notjson>");
 
     $mock = new GuzzleHttp\Handler\MockHandler([
       new GuzzleHttp\Psr7\Response(
@@ -417,7 +417,7 @@ final class InterestsTest extends TestCase {
 
   public function testPublishToInterestsShouldErrorIfBadErrorSchema(): void {
     $this->expectException(Exception::class);
-    $this->expectExceptionMessage("unexpected server error");
+    $this->expectExceptionMessage('Request failed with status 400. Unexpected response format - Body: {"notAnError": true}');
 
     $mock = new GuzzleHttp\Handler\MockHandler([
       new GuzzleHttp\Psr7\Response(

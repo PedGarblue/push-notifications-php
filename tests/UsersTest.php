@@ -356,7 +356,7 @@ final class UsersTest extends TestCase {
 
   public function testPublishToUsersShouldErrorIfBadErrorJson(): void {
     $this->expectException(Exception::class);
-    $this->expectExceptionMessage("unexpected server error");
+    $this->expectExceptionMessage("Request failed with status 400. Invalid JSON response - Body: <notjson></notjson>");
 
     $mock = new GuzzleHttp\Handler\MockHandler([
       new GuzzleHttp\Psr7\Response(
@@ -393,7 +393,7 @@ final class UsersTest extends TestCase {
 
   public function testPublishToUsersShouldErrorIfBadErrorSchema(): void {
     $this->expectException(Exception::class);
-    $this->expectExceptionMessage("unexpected server error");
+    $this->expectExceptionMessage('Request failed with status 400. Unexpected response format - Body: {"notAnError": true}');
 
     $mock = new GuzzleHttp\Handler\MockHandler([
       new GuzzleHttp\Psr7\Response(
@@ -596,7 +596,7 @@ final class UsersTest extends TestCase {
 
   public function testDeleteUserShouldErrorIfBadErrorJson(): void {
     $this->expectException(Exception::class);
-    $this->expectExceptionMessage("unexpected server error");
+    $this->expectExceptionMessage('Request failed with status 400. Invalid JSON response - Body: <notjson></notjson>');
 
     $mock = new GuzzleHttp\Handler\MockHandler([
       new GuzzleHttp\Psr7\Response(
@@ -618,7 +618,7 @@ final class UsersTest extends TestCase {
 
   public function testDeleteUserShouldErrorIfBadErrorSchema(): void {
     $this->expectException(Exception::class);
-    $this->expectExceptionMessage("unexpected server error");
+    $this->expectExceptionMessage('Request failed with status 400. Unexpected response format - Body: {"notAnError": true}');
 
     $mock = new GuzzleHttp\Handler\MockHandler([
       new GuzzleHttp\Psr7\Response(
